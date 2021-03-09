@@ -1,5 +1,10 @@
 FROM nginx:alpine
 
+LABEL Maintainer="eins <one@eins.li>" \
+      Description="Mainsail Klipper GUI based on nginx with Alpine Linux"
+
+ARG MAINSAIL_VER="latest"
+
 EXPOSE 80
 
 COPY ./default.conf /etc/nginx/conf.d/
@@ -8,9 +13,14 @@ COPY ./common_vars.conf /etc/nginx/conf.d/
 
 RUN apk --no-cache add zip && \
 	mkdir /mainsail && \
-	cd /mainsail && \
-	wget -q -O mainsail.zip https://github.com/meteyou/mainsail/releases/latest/download/mainsail.zip && \
-	unzip mainsail.zip && \
+	cd /mainsail
+
+RUN if [ "$MAINSAIL_VER" == "latest" ]; \
+	then wget -q -O mainsail.zip https://github.com/meteyou/mainsail/releases/latest/download/mainsail.zip; \
+	else wget -q -O mainsail.zip https://github.com/meteyou/mainsail/releases/download/${MAINSAIL_VER}/mainsail.zip; \
+	fi
+
+RUN unzip mainsail.zip && \
 	rm mainsail.zip
 
 COPY ./config.json /mainsail/
