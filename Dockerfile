@@ -13,14 +13,12 @@ COPY ./common_vars.conf /etc/nginx/conf.d/
 
 RUN apk --no-cache add zip && \
 	mkdir /mainsail && \
-	cd /mainsail
-
-RUN if [ "$MAINSAIL_VER" == "latest" ]; \
+	cd /mainsail && \
+	if [ "$MAINSAIL_VER" == "latest" ]; \
 	then wget -q -O mainsail.zip https://github.com/meteyou/mainsail/releases/latest/download/mainsail.zip; \
 	else wget -q -O mainsail.zip https://github.com/meteyou/mainsail/releases/download/${MAINSAIL_VER}/mainsail.zip; \
-	fi
-
-RUN unzip mainsail.zip && \
+	fi && \
+	unzip mainsail.zip && \
 	rm mainsail.zip
 
 COPY ./config.json /mainsail/
